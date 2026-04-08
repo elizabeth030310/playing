@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,98 +7,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background: #fafaf8;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .scene {
-      min-height: 420px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-    }
-
-    .question {
-      font-size: 26px;
-      font-weight: 500;
-      color: #1a1a1a;
-      text-align: center;
-      margin-bottom: 2.5rem;
-      letter-spacing: -0.5px;
-      line-height: 1.5;
-    }
-
-    .reaction-box {
-      height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 2rem;
-    }
-
-    .reaction-text {
-      font-size: 26px;
-      font-weight: 500;
-      letter-spacing: -0.5px;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      color: #1a1a1a;
-      text-align: center;
-    }
+    body { font-family: 'Noto Sans KR', sans-serif; background: #fafaf8; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .scene { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; position: relative; overflow: hidden; width: 100%; }
+    .question { font-size: 26px; font-weight: 500; color: #1a1a1a; text-align: center; margin-bottom: 2.5rem; letter-spacing: -0.5px; line-height: 1.5; }
+    .reaction-box { height: 80px; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; }
+    .reaction-text { font-size: 26px; font-weight: 500; letter-spacing: -0.5px; opacity: 0; transform: translateY(12px); transition: opacity 0.3s ease, transform 0.3s ease; color: #1a1a1a; text-align: center; }
     .reaction-text.visible { opacity: 1; transform: translateY(0); }
     .emoji-big { font-size: 48px; display: block; text-align: center; margin-bottom: 0.5rem; }
-
-    .btn {
-      border: none;
-      border-radius: 999px;
-      font-size: 20px;
-      font-weight: 500;
-      padding: 18px 44px;
-      cursor: pointer;
-      font-family: inherit;
-      letter-spacing: -0.3px;
-    }
-
-    .btn-yes {
-      background: #C0DD97;
-      color: #27500A;
-      transition: transform 0.12s ease, background 0.12s;
-    }
+    .btn { border: none; border-radius: 999px; font-size: 20px; font-weight: 500; padding: 18px 44px; cursor: pointer; font-family: inherit; letter-spacing: -0.3px; }
+    .btn-yes { background: #C0DD97; color: #27500A; transition: transform 0.12s ease, background 0.12s; }
     .btn-yes:hover { background: #97C459; color: #173404; }
     .btn-yes:active { transform: scale(0.93); }
-
-    .btn-no {
-      background: #F5C4B3;
-      color: #712B13;
-      position: fixed;
-      cursor: not-allowed;
-      z-index: 999;
-      display: none;
-    }
-
+    .btn-no { background: #F5C4B3; color: #712B13; position: fixed; cursor: not-allowed; z-index: 999; display: none; }
     .particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
     .particle { position: absolute; border-radius: 50%; opacity: 0; }
-
-    @keyframes pop-up {
-      0%   { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-120px) scale(0.4); }
-    }
+    @keyframes pop-up { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-120px) scale(0.4); } }
   </style>
 </head>
 <body>
-
 <div class="scene">
   <div class="particles" id="particles"></div>
   <div class="question">금요일에 만수랑 놀아도 돼?</div>
@@ -113,9 +38,7 @@
     <button class="btn btn-yes" id="yesBtn" onclick="handleYes()">웅!!</button>
   </div>
 </div>
-
 <button class="btn btn-no" id="runBtn" onclick="handleNo()">되겠냐 ?</button>
-
 <script>
   const yesResponses = [
     { e: '🥰', m: '역시 최고야!' },
@@ -124,109 +47,18 @@
     { e: '💚', m: '고마워 진짜' },
     { e: '😊', m: '웅웅 맞아!!' },
   ];
-
   let prev = -1;
-  function pick(arr) {
-    let i;
-    do { i = Math.floor(Math.random() * arr.length); } while (i === prev && arr.length > 1);
-    prev = i;
-    return arr[i];
-  }
-
-  function showReaction(data) {
-    const box = document.getElementById('reaction');
-    document.getElementById('emoji').textContent = data.e;
-    document.getElementById('msg').textContent = data.m;
-    box.classList.remove('visible');
-    setTimeout(() => box.classList.add('visible'), 80);
-  }
-
-  function burst(x, y, colors) {
-    const container = document.getElementById('particles');
-    for (let i = 0; i < 18; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      const size = 8 + Math.random() * 10;
-      p.style.width = size + 'px';
-      p.style.height = size + 'px';
-      p.style.background = colors[Math.floor(Math.random() * colors.length)];
-      const angle = Math.random() * 360;
-      const dist = 40 + Math.random() * 60;
-      const sr = document.querySelector('.scene').getBoundingClientRect();
-      p.style.left = (x - sr.left + dist * Math.cos(angle * Math.PI / 180)) + 'px';
-      p.style.top  = (y - sr.top  + dist * Math.sin(angle * Math.PI / 180)) + 'px';
-      p.style.animation = `pop-up ${0.5 + Math.random() * 0.3}s ease-out forwards`;
-      container.appendChild(p);
-      setTimeout(() => p.remove(), 900);
-    }
-  }
-
-  function handleYes() {
-    showReaction(pick(yesResponses));
-    const btn = document.getElementById('yesBtn');
-    const r = btn.getBoundingClientRect();
-    burst(r.left + r.width / 2, r.top + r.height / 2, ['#C0DD97','#97C459','#5DCAA5','#9FE1CB','#639922']);
-  }
-
-  function handleNo() {
-    showReaction({ e: '🫣', m: '사실 이것도 좋아!' });
-    const r = runBtn.getBoundingClientRect();
-    burst(r.left + r.width / 2, r.top + r.height / 2, ['#F5C4B3','#F0997B','#D85A30','#FAC775','#EF9F27']);
-  }
-
+  function pick(arr) { let i; do { i = Math.floor(Math.random() * arr.length); } while (i === prev && arr.length > 1); prev = i; return arr[i]; }
+  function showReaction(data) { const box = document.getElementById('reaction'); document.getElementById('emoji').textContent = data.e; document.getElementById('msg').textContent = data.m; box.classList.remove('visible'); setTimeout(() => box.classList.add('visible'), 80); }
+  function burst(x, y, colors) { const container = document.getElementById('particles'); for (let i = 0; i < 18; i++) { const p = document.createElement('div'); p.className = 'particle'; const size = 8 + Math.random() * 10; p.style.width = size + 'px'; p.style.height = size + 'px'; p.style.background = colors[Math.floor(Math.random() * colors.length)]; const angle = Math.random() * 360; const dist = 40 + Math.random() * 60; const sr = document.querySelector('.scene').getBoundingClientRect(); p.style.left = (x - sr.left + dist * Math.cos(angle * Math.PI / 180)) + 'px'; p.style.top = (y - sr.top + dist * Math.sin(angle * Math.PI / 180)) + 'px'; p.style.animation = `pop-up ${0.5 + Math.random() * 0.3}s ease-out forwards`; container.appendChild(p); setTimeout(() => p.remove(), 900); } }
+  function handleYes() { showReaction(pick(yesResponses)); const btn = document.getElementById('yesBtn'); const r = btn.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, ['#C0DD97','#97C459','#5DCAA5','#9FE1CB','#639922']); }
+  function handleNo() { showReaction({ e: '🫣', m: '사실 이것도 좋아!' }); const r = runBtn.getBoundingClientRect(); burst(r.left + r.width / 2, r.top + r.height / 2, ['#F5C4B3','#F0997B','#D85A30','#FAC775','#EF9F27']); }
   const runBtn = document.getElementById('runBtn');
-  let btnW, btnH, initialized = false;
-  let curX = 0, curY = 0;
-  let targetX = 0, targetY = 0;
-  let vx = 0, vy = 0;
-  let angleOffset = Math.PI / 2.5;
-
-  function initPos() {
-    runBtn.style.display = 'block';
-    btnW = runBtn.offsetWidth;
-    btnH = runBtn.offsetHeight;
-    const yesRect = document.getElementById('yesBtn').getBoundingClientRect();
-    curX = yesRect.right + 24;
-    curY = yesRect.top;
-    targetX = curX;
-    targetY = curY;
-    runBtn.style.left = curX + 'px';
-    runBtn.style.top  = curY + 'px';
-    initialized = true;
-    loop();
-  }
-
+  let btnW, btnH, initialized = false, curX = 0, curY = 0, targetX = 0, targetY = 0, vx = 0, vy = 0, angleOffset = Math.PI / 2.5;
+  function initPos() { runBtn.style.display = 'block'; btnW = runBtn.offsetWidth; btnH = runBtn.offsetHeight; const y = document.getElementById('yesBtn').getBoundingClientRect(); curX = y.right + 24; curY = y.top; targetX = curX; targetY = curY; runBtn.style.left = curX + 'px'; runBtn.style.top = curY + 'px'; initialized = true; loop(); }
   setTimeout(initPos, 150);
-
-  function loop() {
-    vx = vx * 0.72 + (targetX - curX) * 0.07;
-    vy = vy * 0.72 + (targetY - curY) * 0.07;
-    curX += vx;
-    curY += vy;
-    runBtn.style.left = curX + 'px';
-    runBtn.style.top  = curY + 'px';
-    requestAnimationFrame(loop);
-  }
-
-  document.addEventListener('mousemove', (e) => {
-    if (!initialized) return;
-    const mx = e.clientX, my = e.clientY;
-    const bx = curX + btnW / 2;
-    const by = curY + btnH / 2;
-    const dx = bx - mx, dy = by - my;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < 140) {
-      const fleeAngle = Math.atan2(dy, dx) + angleOffset;
-      const fleeDist = 160 + (140 - dist) * 1.2;
-      let nx = bx + Math.cos(fleeAngle) * fleeDist;
-      let ny = by + Math.sin(fleeAngle) * fleeDist;
-      nx = Math.max(btnW / 2, Math.min(window.innerWidth  - btnW / 2, nx));
-      ny = Math.max(btnH / 2, Math.min(window.innerHeight - btnH / 2, ny));
-      targetX = nx - btnW / 2;
-      targetY = ny - btnH / 2;
-      angleOffset = -angleOffset;
-    }
-  });
+  function loop() { vx = vx * 0.72 + (targetX - curX) * 0.07; vy = vy * 0.72 + (targetY - curY) * 0.07; curX += vx; curY += vy; runBtn.style.left = curX + 'px'; runBtn.style.top = curY + 'px'; requestAnimationFrame(loop); }
+  document.addEventListener('mousemove', (e) => { if (!initialized) return; const mx = e.clientX, my = e.clientY; const bx = curX + btnW / 2; const by = curY + btnH / 2; const dx = bx - mx, dy = by - my; const dist = Math.sqrt(dx * dx + dy * dy); if (dist < 140) { const fleeAngle = Math.atan2(dy, dx) + angleOffset; const fleeDist = 160 + (140 - dist) * 1.2; let nx = bx + Math.cos(fleeAngle) * fleeDist; let ny = by + Math.sin(fleeAngle) * fleeDist; nx = Math.max(btnW / 2, Math.min(window.innerWidth - btnW / 2, nx)); ny = Math.max(btnH / 2, Math.min(window.innerHeight - btnH / 2, ny)); targetX = nx - btnW / 2; targetY = ny - btnH / 2; angleOffset = -angleOffset; } });
 </script>
 </body>
 </html>
